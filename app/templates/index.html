@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<pre>{{ data }}</pre>
+{%- for k,s in data.items()|sort %}
+{%- if s['quote']['amount'] == s['quote']['previous_close'] %}
+{%- set position = "primary" %}
+{%- elif s['quote']['amount'] > s['quote']['previous_close'] %}
+{%- set position = "success" %}
+{%- else %}
+{%- set position = "danger" %}
+{%- endif %}
+<div id="stock_{{k}}" class="float-left bg-light text-truncate stock">
+    <h4 class="text-{{ position }}">{{ s['stock']['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['stock']['name'] }}</small></h4>
+    <h5><span class="text-{{position}}">{{ s['quote']['amount']|currency }}</span>
+        <small class="text-muted font-weight-light">{{ s['quote']['quote_date']|humanize }}</small>
+    </h5>
+    <small class="text-muted">
+        Close: {{ s['quote']['previous_close']|currency }} | Open: {{ s['quote']['open']|currency }}
+    </small>
+    <h6>Holdings: {{ s['quantity'] }}</h6>
+    <h6>Value: {{ (s['quantity']|int * s['quote']['amount']|float)|currency }}</h6>
+</div>
+{%- endfor %}
+<div style="clear:both"></div>
+{% endblock %}
