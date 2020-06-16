@@ -17,5 +17,5 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.static_folder = 'static'
 db = SQLAlchemy(app)
 
-
 from app import helpers, routes, filters
+

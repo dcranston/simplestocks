@@ -12,7 +12,7 @@ import humanize
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
     date = date.replace(tzinfo=None)
-    return humanize.naturaltime(datetime.utcnow() - date)
+    return humanize.naturaltime(datetime.now() - date)
 
 
 @app.template_filter('ctime')

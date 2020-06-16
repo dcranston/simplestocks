@@ -1,24 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-<pre>{{ data }}</pre>
-{%- for k,s in data.items()|sort %}
-{%- if s['quote']['amount'] == s['quote']['previous_close'] %}
+{%- for s in stocks %}
+{%- if s['quote'] == s['prev_close'] %}
 {%- set position = "primary" %}
-{%- elif s['quote']['amount'] > s['quote']['previous_close'] %}
+{%- elif s['quote'] > s['prev_close'] %}
 {%- set position = "success" %}
 {%- else %}
 {%- set position = "danger" %}
 {%- endif %}
-<div id="stock_{{k}}" class="float-left bg-light text-truncate stock">
-    <h4 class="text-{{ position }}">{{ s['stock']['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['stock']['name'] }}</small></h4>
-    <h5><span class="text-{{position}}">{{ s['quote']['amount']|currency }}</span>
-        <small class="text-muted font-weight-light">{{ s['quote']['quote_date']|humanize }}</small>
+<div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
+    <h4 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h4>
+    <h5><span class="text-{{position}}">{{ s['quote']|currency }}</span>
+        <small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
     </h5>
     <small class="text-muted">
-        Close: {{ s['quote']['previous_close']|currency }} | Open: {{ s['quote']['open']|currency }}
+        Close: {{ s['prev_close']|currency }} | Open: {{ s['open']|currency }}
     </small>
-    <h6>Holdings: {{ s['quantity'] }}</h6>
-    <h6>Value: {{ (s['quantity']|int * s['quote']['amount']|float)|currency }}</h6>
+    <h6>Holdings: {{ s['holdings'] }}</h6>
+    <h6>Value: {{ s['total_value']|currency }}</h6>
 </div>
 {%- endfor %}
 <div style="clear:both"></div>

@@ -1,5 +1,59 @@
-from app import db
+from app import db, helpers, app
 import json
+
+
+class Config(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    auth_token = db.Column(db.String(64), nullable=False)
+    refresh_token = db.Column(db.String(64), nullable=False)
+
+    def __repr__(self):
+        return '<Config {}/{}/{}>'.format(self.id, self.auth_token, self.refresh_token)
+
+    @property
+    def auth(self):
+        return self.auth_token
+
+    @auth.setter
+    def auth(self, value):
+        self.auth_token = value
+
+    @property
+    def refresh(self):
+        return self.refresh_token
+
+    @refresh.setter
+    def refresh(self, value):
+        self.refresh_token = value
+        db.session.commit()
+
+
+class Stock:
+    def __init__(self, data):
+        self.symbol = data['stock']['symbol']
+        self.name = data['stock']['name']
+        self.holdings = int(data['quantity'])
+        self.quote = 0.0
+        self.quote_timestamp = None
+        self.open = float(data['quote']['open'])
+        self.prev_close = float(data['quote']['previous_close'])
+        self.prev_close_timestamp = data['quote']['previous_closed_at']
+        self.total_value = 0.0
+
+    def set_quote(self, value):
+        self.quote = value
+        self.update_value()
+
+    def update_value(self):
+        self.total_value = self.holdings * self.quote
+
+    def to_dict(self):
+        v = vars(self)
+        v.update({"quote": self.quote})
+        return v
+
+    def __repr__(self):
+        return '<Stock %r>' % self.symbol
 
 
 class Quote(db.Model):
@@ -13,14 +67,16 @@ class Quote(db.Model):
     def __repr__(self):
         return '<Quote %r>' % self.symbol
 
+    def to_dict(self):
+        return dict({
+            "id": self.id,
+            "symbol": self.symbol,
+            "timestamp": self.timestamp.ctime(),
+            "value": self.value
+            })
+
     def to_json(self):
-        return json.dumps({
-            self.symbol: {
-                "id": self.id,
-                "symbol": self.symbol,
-                "timestamp": self.timestamp.ctime(),
-                "value": self.value
-            }
-        })
+        return json.dumps(self.to_dict())
+
 
 db.create_all()

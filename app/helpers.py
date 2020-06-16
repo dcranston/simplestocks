@@ -3,8 +3,8 @@ import sys
 import logging
 from collections import namedtuple
 import requests
-from app import config, config_file
-from app.models import Quote
+from app import config, config_file, db
+from app.models import Quote, Config
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
@@ -17,11 +17,12 @@ def read_config():
     global config, config_file
     config_file = config.read("config.ini")[0]
     Creds = namedtuple("Creds", ["email", "password", "otp", "token", "refresh_token"])
+    db_cfg = Config().query.one()
     creds = Creds(email=config['Credentials']["email"],
                   password=config['Credentials']["password"],
                   otp=config['Credentials']["otp"],
-                  token=config['Credentials']["token"],
-                  refresh_token=config['Credentials']["refresh_token"]
+                  token=db_cfg.auth_token,
+                  refresh_token=db_cfg.refresh_token
                   )
     return creds
 
@@ -34,8 +35,16 @@ def write_config():
 
 def update_config(section, key, value):
     global config, config_file
-    config[section][key] = value
-    write_config()
+    db_cfg = Config().query.one()
+    if key == "token":
+        db_cfg.auth = value
+        db.session.commit()
+    elif key == "refresh_token":
+        db_cfg.refresh = value
+        db.session.commit()
+    else:
+        config[section][key] = value
+        write_config()
 
 
 def ws_login(email, password, otp):
@@ -120,4 +129,5 @@ def ws_get_positions():
 
 def get_current_quote(symbol):
     quote = Quote.query.filter_by(symbol=symbol).order_by(Quote.timestamp.desc()).first()
-    logging.debug(quote.to_json())
+    return quote.to_dict()
+    # logging.debug(quote.to_json())

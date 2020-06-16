@@ -10,5 +10,12 @@ CREATE TABLE quotes (
   timestamp timestamp NOT NULL,
   value float NOT NULL);
 
+DROP TABLE IF EXISTS config;
+CREATE TABLE config (
+  id int PRIMARY KEY AUTO_INCREMENT,
+  auth_token varchar(64) NULL,
+  refresh_token varchar(64)) NULL;
+
+
 GRANT ALL ON simplestocks.* TO 'simplestocks'@'localhost';
 GRANT ALL ON simplestocks.* TO 'simplestocks'@'%';
