@@ -11,7 +11,9 @@
 <div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
     <h4 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h4>
     <h5><span class="text-{{position}}">{{ s['quote']|currency }}</span>
-        <small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
+        <span data-toggle="tooltip" data-placement="top" title="{{ s['quote_timestamp']|ctime }}">
+            <small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
+        </span>
     </h5>
     <small class="text-muted">
         Close: {{ s['prev_close']|currency }} | Open: {{ s['open']|currency }}
