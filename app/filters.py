@@ -11,7 +11,7 @@ import humanize
 @app.template_filter('humanize')
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
-    date = date.replace(tzinfo=None)
+    date = date.replace(tzinfo=pytz.UTC)
     return humanize.naturaltime(datetime.now() - date)
 
 
