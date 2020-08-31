@@ -11,6 +11,7 @@ import sys
 @app.route('/')
 def index():
     start = time.time()
+    total_value = 0.0
     stocks = list()
     try:
         data = helpers.ws_get_positions()
@@ -23,9 +24,11 @@ def index():
         stock.set_quote(float(current["value"]))
         stock.quote_timestamp = current["timestamp"]
         stocks.append(stock.to_dict())
+        total_value += stock.total_value
 
     end = time.time()
-    return render_template('index.html', data=data, stocks=stocks, timing=(end-start), now=time.ctime())
+    return render_template('index.html', data=data, stocks=stocks, total_value=total_value,
+                           timing=(end-start), now=time.ctime())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -56,7 +59,7 @@ def update():
     for key, entry in data.items():
         for line in entry['sparkline']:
             timestamp = parser.parse(line['date'] + " " + line['time'])
-            timestamp = timestamp.replace(tzinfo=pytz.UTC)
+            timestamp = timestamp.replace(tzinfo=pytz.timezone("US/Eastern"))
             q = Quote(symbol=key,
                       value=line['close'],
                       timestamp=timestamp

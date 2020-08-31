@@ -11,8 +11,9 @@ import humanize
 @app.template_filter('humanize')
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
-    date = date.replace(tzinfo=pytz.UTC)
-    now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+    tz = pytz.timezone("US/Eastern")
+    date = date.replace(tzinfo=tz)
+    now = datetime.now().replace(tzinfo=tz)
     return humanize.naturaltime(now - date)
 
 
@@ -35,3 +36,14 @@ def _jinja2_filter_currency(value):
     value = float(value)
     return "${:,.2f}".format(value)
 
+
+@app.template_filter('currency_delta')
+def _jinja2_filter_currency(value):
+    value = float(value)
+    dec_value = "${:,.2f}".format(abs(value))
+    if value == 0:
+        return dec_value
+    elif value <= 0:
+        return "-" + dec_value
+    else:
+        return "+" + dec_value

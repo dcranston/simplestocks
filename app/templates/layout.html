@@ -21,6 +21,12 @@
     </script>
     {% block footer %}
     <footer>
+        {%- if total_value %}
+        <div class="text-center">
+            <h1 class="display-4">{{ total_value|currency }}</h1>
+            <h4>Portfolio Value</h4>
+        </div>
+        {%- endif %}
         {%- if timing %}
         <div id="timing" class="container text-center">
             Loaded in {{ timing|round(2) }}s @ {{ now|ctime }}

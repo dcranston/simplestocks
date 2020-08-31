@@ -16,7 +16,8 @@
         </span>
     </h5>
     <small class="text-muted">
-        Close: {{ s['prev_close']|currency }} | Open: {{ s['open']|currency }}
+        Close: {{ s['prev_close']|currency }} ({{ s['since_prev_close']|currency_delta }})
+        <!--| Open: {{ s['open']|currency }} ({{ s['since_open']|currency_delta }})-->
     </small>
     <h6>Holdings: {{ s['holdings'] }}</h6>
     <h6>Value: {{ s['total_value']|currency }}</h6>
