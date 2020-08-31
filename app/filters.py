@@ -11,8 +11,8 @@ import humanize
 @app.template_filter('humanize')
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
-    date = date.replace(tzinfo=pytz.timezone(("US/Eastern")))
-    now = datetime.now().replace(tzinfo=pytz.UTC)
+    date = date.replace(tzinfo=pytz.UTC)
+    now = datetime.utcnow().replace(tzinfo=pytz.UTC)
     return humanize.naturaltime(now - date)
 
 
