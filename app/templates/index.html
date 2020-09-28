@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 {%- for portfolio in portfolios %}
-    {%- for s in stocks if stock.portfolio = portfolio %}
+    {%- for s in stocks if stock["portfolio"] = portfolio %}
         {%- if s['quote'] == s['prev_close'] %}
         {%- set position = "primary" %}
         {%- elif s['quote'] > s['prev_close'] %}
