@@ -13,15 +13,14 @@ def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
     tz = pytz.timezone("US/Eastern")
     date = date.replace(tzinfo=tz)
-    now = datetime.now().replace(tzinfo=tz)
+    now = datetime.utcnow()
     return humanize.naturaltime(now - date)
 
 
 @app.template_filter('ctime')
 def _jinja2_filter_datetime(date, fmt=None):
     date = parser.parse(date)
-    native = date.replace(tzinfo=pytz.UTC)
-    return native.ctime()
+    return date.ctime()
 
 
 @app.template_filter('shorttime')
