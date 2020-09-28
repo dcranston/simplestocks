@@ -1,7 +1,7 @@
 from app import app, db, helpers
 from app.models import Quote, Stock
 from sqlalchemy import exc
-from flask import render_template, request, redirect, url_for, make_response, Markup
+from flask import render_template, request, redirect, url_for, make_response, Markup, jsonify
 from dateutil import parser
 import pytz
 import time
@@ -61,18 +61,22 @@ def update():
         resp = make_response(Markup(), 500)
         return resp
     for key, entry in data.items():
-        for line in entry['sparkline']:
-            timestamp = parser.parse(line['date'] + " " + line['time'])
-            timestamp = timestamp.replace(tzinfo=pytz.timezone("US/Eastern"))
-            q = Quote(symbol=key,
-                      value=line['close'],
-                      timestamp=timestamp
-                      )
-            db.session.add(q)
-            try:
-                db.session.commit()
-            except exc.IntegrityError:
-                db.session.rollback()
+        try:
+            for line in entry['sparkline']:
+                timestamp = parser.parse(line['date'] + " " + line['time'])
+                timestamp = timestamp.replace(tzinfo=pytz.timezone("US/Eastern"))
+                q = Quote(symbol=key,
+                          value=line['close'],
+                          timestamp=timestamp
+                          )
+                db.session.add(q)
+                try:
+                    db.session.commit()
+                except exc.IntegrityError:
+                    db.session.rollback()
+        except KeyError:
+            app.logger.debug("There was updating...\n", exc_info=True)
+            return jsonify(entry)
     end = time.time()
     resp = make_response('', 200)
     resp.headers['X-Time-Elapsed'] = end-start
