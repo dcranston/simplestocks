@@ -11,7 +11,7 @@ import sys
 @app.route('/')
 def index():
     start = time.time()
-    total_value = 0.0
+    portfolios = dict()
     stocks = list()
     try:
         data = helpers.ws_get_positions()
@@ -25,12 +25,17 @@ def index():
             stock.set_quote(float(current["value"]))
             stock.quote_timestamp = current["timestamp"]
             stocks.append(stock.to_dict())
-            total_value += stock.total_value
+            # total_value += stock.total_value
         except:
             flash(f"There was an error processing: {key}", "error")
             app.logger.debug("There was an error processing an entry: ", exc_info=True)
             app.logger.debug(entry)
+    for stock in stocks:
+        if stock.portfolio not in portfolios.keys():
+            portfolios.update({stock.portfolio: {"total_value": 0}})
+        portfolios[stock.portfolio]["total_value"] = stock.total_value
 
+    portfolios = sorted(portfolios, reverse=True)
     debug = False
     if request.args.get('debug'):
         debug = True
@@ -38,7 +43,7 @@ def index():
     if request.args.get('dump') and debug:
         return jsonify(data)
     end = time.time()
-    return render_template('index.html', data=data, stocks=stocks, total_value=total_value,
+    return render_template('index.html', portfolios=portfolios, stocks=stocks,
                            timing=(end-start), debug=debug, now=time.ctime())
 
 
