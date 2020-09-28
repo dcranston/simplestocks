@@ -10,11 +10,13 @@ import humanize
 # ----------------------------
 @app.template_filter('humanize')
 def _jinja2_filter_datetime(date, fmt=None):
+    eastern = pytz.timezone("US/Eastern")
     date = parser.parse(date)
-    tz = pytz.timezone("US/Eastern")
-    date = date.replace(tzinfo=tz)
+    date = eastern.localize(date)
+
+    utc = pytz.timezone("UTC")
     now = datetime.utcnow()
-    now = now.replace(tzinfo=pytz.UTC)
+    now = utc.localize(now)
     return humanize.naturaltime(now - date)
 
 
