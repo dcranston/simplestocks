@@ -19,7 +19,11 @@ def index():
         app.logger.debug("Unexpected error: {}".format(sys.exc_info()))
         return redirect(url_for('login') + "?return_to=" + request.url)
     for key, entry in data.items():
-        stock = Stock(entry)
+        try:
+            stock = Stock(entry)
+        except:
+            app.logger.debug("There was an error processing an entry: ", exc_info=True)
+            app.logger.debug(entry)
         current = helpers.get_current_quote(key)
         stock.set_quote(float(current["value"]))
         stock.quote_timestamp = current["timestamp"]
