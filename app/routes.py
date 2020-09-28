@@ -11,7 +11,7 @@ import sys
 @app.route('/')
 def index():
     start = time.time()
-    portfolios = dict()
+    portfolios = {}
     stocks = list()
     try:
         data = helpers.ws_get_positions()
@@ -30,10 +30,11 @@ def index():
             flash(f"There was an error processing: {key}", "error")
             app.logger.debug("There was an error processing an entry: ", exc_info=True)
             app.logger.debug(entry)
+    stock = None
     for stock in stocks:
-        if stock.portfolio not in portfolios.keys():
-            portfolios.update({stock.portfolio: {"total_value": 0}})
-        portfolios[stock.portfolio]["total_value"] = stock.total_value
+        if stock['portfolio'] not in portfolios.keys():
+            portfolios.update({stock['portfolio']: {"total_value": 0}})
+        portfolios[stock['portfolio']]["total_value"] = stock['total_value']
 
     portfolios = sorted(portfolios, reverse=True)
     debug = False
