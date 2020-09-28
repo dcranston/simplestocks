@@ -32,6 +32,11 @@
             Loaded in {{ timing|round(2) }}s @ {{ now|ctime }}
         </div>
         {%- endif %}
+        {%- if debug %}
+        <div id="debug">
+            {{ data }}
+        </div>
+        {%- endif %}
     </footer>
     {% endblock %}
 </body>

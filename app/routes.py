@@ -29,10 +29,13 @@ def index():
         stock.quote_timestamp = current["timestamp"]
         stocks.append(stock.to_dict())
         total_value += stock.total_value
-
+    if request.args.get('debug'):
+        debug = True
+    else:
+        debug = False
     end = time.time()
     return render_template('index.html', data=data, stocks=stocks, total_value=total_value,
-                           timing=(end-start), now=time.ctime())
+                           timing=(end-start), debug=debug, now=time.ctime())
 
 
 @app.route('/login', methods=['GET', 'POST'])
