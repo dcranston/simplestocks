@@ -32,6 +32,7 @@ class Stock:
     def __init__(self, data):
         self.symbol = data['stock']['symbol']
         self.name = data['stock']['name']
+        self.portfolio = data["account-id"]
         self.holdings = int(data['quantity'])
         self.quote = 0.0
         self.quote_timestamp = None
