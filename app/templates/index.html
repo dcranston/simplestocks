@@ -10,13 +10,15 @@
 {%- endif %}
 <div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
     <h5 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h5>
-    <h6><span class="text-{{position}}">{{ s['quote']|currency }}</span>
+    <h6><span class="text-{{position}}">
+            {{ s['quote']|currency }} ({{ s['since_prev_close']|currency_delta }})
+        </span>
         <span data-toggle="tooltip" data-placement="top" title="{{ s['quote_timestamp']|ctime }}">
-            <small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
+            <br /><small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
         </span>
     </h6>
     <small class="text-muted">
-        Close: {{ s['prev_close']|currency }} ({{ s['since_prev_close']|currency_delta }})
+        Close: {{ s['prev_close']|currency }}
         <!--| Open: {{ s['open']|currency }} ({{ s['since_open']|currency_delta }})-->
     </small>
     <h6>Holdings: {{ s['holdings'] }}&nbsp;&nbsp;Value: {{ s['total_value']|currency }}</h6>
