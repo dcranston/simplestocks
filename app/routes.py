@@ -31,10 +31,12 @@ def index():
             app.logger.debug("There was an error processing an entry: ", exc_info=True)
             app.logger.debug(entry)
 
+    debug = False
     if request.args.get('debug'):
         debug = True
-    else:
-        debug = False
+    dump = False
+    if request.args.get('dump') and debug:
+        return jsonify(data)
     end = time.time()
     return render_template('index.html', data=data, stocks=stocks, total_value=total_value,
                            timing=(end-start), debug=debug, now=time.ctime())
@@ -80,8 +82,8 @@ def update():
                 except exc.IntegrityError:
                     db.session.rollback()
         except KeyError:
-            app.logger.debug("There was updating...\n", exc_info=True)
-            return jsonify(entry)
+            app.logger.debug("There was an error updating...\n", exc_info=True)
+            return make_response(jsonify(entry), 500)
     end = time.time()
     resp = make_response('', 200)
     resp.headers['X-Time-Elapsed'] = end-start
