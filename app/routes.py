@@ -1,7 +1,7 @@
 from app import app, db, helpers
 from app.models import Quote, Stock
 from sqlalchemy import exc
-from flask import render_template, request, redirect, url_for, make_response, Markup, jsonify
+from flask import render_template, request, redirect, url_for, make_response, Markup, jsonify, flash
 from dateutil import parser
 import pytz
 import time
@@ -21,14 +21,16 @@ def index():
     for key, entry in data.items():
         try:
             stock = Stock(entry)
+            current = helpers.get_current_quote(key)
+            stock.set_quote(float(current["value"]))
+            stock.quote_timestamp = current["timestamp"]
+            stocks.append(stock.to_dict())
+            total_value += stock.total_value
         except:
+            flash(f"There was an error processing: {key}", "error")
             app.logger.debug("There was an error processing an entry: ", exc_info=True)
             app.logger.debug(entry)
-        current = helpers.get_current_quote(key)
-        stock.set_quote(float(current["value"]))
-        stock.quote_timestamp = current["timestamp"]
-        stocks.append(stock.to_dict())
-        total_value += stock.total_value
+
     if request.args.get('debug'):
         debug = True
     else:
