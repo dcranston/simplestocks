@@ -3,7 +3,7 @@
 {%- for key, portfolio in portfolios.items() %}
     <div id="{{ key }}">
         <h1>{{ key }}</h1>
-        {%- for s in stocks if s["portfolio"] == portfolio %}
+        {%- for s in stocks if s["portfolio"] == key %}
             {%- if s['quote'] == s['prev_close'] %}
             {%- set position = "primary" %}
             {%- elif s['quote'] > s['prev_close'] %}
