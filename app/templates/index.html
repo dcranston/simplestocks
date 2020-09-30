@@ -1,34 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
-{%- for portfolio in portfolios %}
-    {%- for s in stocks if s["portfolio"] == portfolio %}
-        {%- if s['quote'] == s['prev_close'] %}
-        {%- set position = "primary" %}
-        {%- elif s['quote'] > s['prev_close'] %}
-        {%- set position = "success" %}
-        {%- else %}
-        {%- set position = "danger" %}
-        {%- endif %}
-        <div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
-            <h5 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h5>
-            <h6><span class="text-{{position}}">
-                    {{ s['quote']|currency }} ({{ s['since_prev_close']|currency_delta }})
-                </span>
-                <span data-toggle="tooltip" data-placement="top" title="{{ s['quote_timestamp']|ctime }}">
-                    <br /><small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
-                </span>
-            </h6>
-            <small class="text-muted">
-                Close: {{ s['prev_close']|currency }}
-                <!--| Open: {{ s['open']|currency }} ({{ s['since_open']|currency_delta }})-->
-            </small>
-            <h6>Holdings: {{ s['holdings'] }}&nbsp;&nbsp;Value: {{ s['total_value']|currency }}</h6>
+{%- for key, portfolio in portfolios.items() %}
+    <div id="{{ key }}">
+        <h1>{{ key }}</h1>
+        {%- for s in stocks if s["portfolio"] == portfolio %}
+            {%- if s['quote'] == s['prev_close'] %}
+            {%- set position = "primary" %}
+            {%- elif s['quote'] > s['prev_close'] %}
+            {%- set position = "success" %}
+            {%- else %}
+            {%- set position = "danger" %}
+            {%- endif %}
+            <div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
+                <h5 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h5>
+                <h6><span class="text-{{position}}">
+                        {{ s['quote']|currency }} ({{ s['since_prev_close']|currency_delta }})
+                    </span>
+                    <span data-toggle="tooltip" data-placement="top" title="{{ s['quote_timestamp']|ctime }}">
+                        <br /><small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>
+                    </span>
+                </h6>
+                <small class="text-muted">
+                    Close: {{ s['prev_close']|currency }}
+                </small>
+                <h6>Holdings: {{ s['holdings'] }}&nbsp;&nbsp;Value: {{ s['total_value']|currency }}</h6>
+            </div>
+        {%- endfor %}
+        <br />
+        <div class="text-center">
+            <h1 class="display-4">{{ portfolio['total_value']|currency }}</h1>
+            <h4>Portfolio Value</h4>
         </div>
-    {%- endfor %}
-    <br />
-    <div class="text-center">
-        <h1 class="display-4">{{ portfolio['total_value']|currency }}</h1>
-        <h4>Portfolio Value</h4>
     </div>
 {%- endfor %}
 <div style="clear:both"></div>
