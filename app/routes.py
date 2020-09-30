@@ -35,7 +35,7 @@ def index():
     for stock in stocks:
         if stock['portfolio'] not in portfolios.keys():
             portfolios.update({stock['portfolio']: {"total_value": 0}})
-        portfolios[stock['portfolio']]["total_value"] = stock['total_value']
+        portfolios[stock['portfolio']]["total_value"] += stock['total_value']
 
     # portfolios = sorted(portfolios, reverse=True)
     app.logger.debug(json.dumps(portfolios))
