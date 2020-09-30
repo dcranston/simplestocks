@@ -6,6 +6,7 @@ from dateutil import parser
 import pytz
 import time
 import sys
+import json
 
 
 @app.route('/')
@@ -36,7 +37,8 @@ def index():
             portfolios.update({stock['portfolio']: {"total_value": 0}})
         portfolios[stock['portfolio']]["total_value"] = stock['total_value']
 
-    portfolios = sorted(portfolios, reverse=True)
+    # portfolios = sorted(portfolios, reverse=True)
+    app.logger.debug(json.dumps(portfolios))
     debug = False
     if request.args.get('debug'):
         debug = True
