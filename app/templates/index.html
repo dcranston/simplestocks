@@ -14,7 +14,8 @@
             <div id="stock_{{ s['symbol'] }}" class="float-left bg-light text-truncate stock">
                 <h5 class="text-{{ position }}">{{ s['symbol'] }}<br /><small class="text-muted text-truncate">{{ s['name'] }}</small></h5>
                 <h6><span class="text-{{position}}">
-                        {{ s['quote']|currency }} ({{ s['since_prev_close']|currency_delta }})
+                        {{ s['quote']|currency }}&nbsp;
+                        ({{ s['since_prev_close']|currency_delta }} / {{ s['since_prev_close_pct'] }}%)
                     </span>
                     <span data-toggle="tooltip" data-placement="top" title="{{ s['quote_timestamp']|ctime }}">
                         <br /><small class="text-muted font-weight-light">{{ s['quote_timestamp']|humanize }}</small>

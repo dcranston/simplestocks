@@ -41,12 +41,14 @@ class Stock:
         self.prev_close = float(data['quote']['previous_close'])
         self.prev_close_timestamp = data['quote']['previous_closed_at']
         self.since_prev_close = 0.0
+        self.since_prev_close_pct = 0.0
         self.total_value = 0.0
 
     def set_quote(self, value):
         self.quote = value
         self.update_value()
         self.since_prev_close = value - self.prev_close
+        self.since_prev_close_pct = round((self.since_prev_close / self.prev_close) * 100, 1)
         self.since_open = value - self.open
 
     def update_value(self):
