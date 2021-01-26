@@ -89,6 +89,7 @@ def debug_portfolios():
             else:
                 port = portfolios[entry["account_id"]]
             port.positions.append(Stock(entry))
+        portfolio_dicts = [p.to_dict() for p in portfolios.items()]
         return jsonify(portfolios)
     except Exception as e:
         return Markup(str(e))

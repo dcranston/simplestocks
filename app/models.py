@@ -72,6 +72,10 @@ class Portfolio:
     def __repr__(self):
         return f'<Portfolio {self.id}>'
 
+    def to_dict(self):
+        self.positions = [s.to_dict() for s in self.positions]
+        return vars(self)
+
 
 class Quote(db.Model):
     __tablename__ = "quotes"
