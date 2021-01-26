@@ -77,7 +77,7 @@ def debug_raw_data():
 
 
 @app.route('/debug_portfolios')
-def debug_raw_data():
+def debug_portfolios():
     try:
         data = helpers.ws_get_positions()
         portfolios = {}
