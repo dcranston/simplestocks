@@ -67,6 +67,15 @@ def login():
             return redirect(url_for('index'))
 
 
+@app.route('/debug')
+def debug_raw_data():
+    try:
+        data = helpers.ws_get_positions()
+        return jsonify(data)
+    except:
+        return jsonify({"error": "unknown"})
+
+
 @app.route('/update', methods=['GET'])
 def update():
     start = time.time()
