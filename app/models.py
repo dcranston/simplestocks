@@ -46,9 +46,9 @@ class Stock:
         self.set_quote(data['quote']['amount'])
 
     def set_quote(self, value):
-        self.quote = value
+        self.quote = float(value)
         self.update_value()
-        self.since_prev_close = value - self.prev_close
+        self.since_prev_close = self.quote - self.prev_close
         self.since_prev_close_pct = round((self.since_prev_close / self.prev_close) * 100, 2)
         self.since_open = value - self.open
 
