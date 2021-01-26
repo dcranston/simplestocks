@@ -88,7 +88,7 @@ def update():
                           )
                 db.session.add(q)
                 url = "http://elk.nod.lan:8086/write?db=stocks&precision=s"
-                data = f"{key} value={line['close']} {int(timestamp.timestamp())}"
+                data = f"quotes,symbol={key} value={line['close']} {int(timestamp.timestamp())}"
                 try:
                     write = requests.post(url, data=data)
                 except:
