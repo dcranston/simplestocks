@@ -90,8 +90,8 @@ def debug_portfolios():
                 port = portfolios[entry["account_id"]]
             port.positions.append(Stock(entry))
         return jsonify(portfolios)
-    except:
-        return jsonify({"error": "unknown"})
+    except Exception as e:
+        return jsonify({"error": e})
 
 
 @app.route('/update', methods=['GET'])
