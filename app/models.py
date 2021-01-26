@@ -63,6 +63,16 @@ class Stock:
         return '<Stock %r>' % self.symbol
 
 
+class Portfolio:
+    def __init__(self, account_id):
+        self.id = account_id
+        self.positions = []
+        pass
+
+    def __repr__(self):
+        return f'<Portfolio {self.id}>'
+
+
 class Quote(db.Model):
     __tablename__ = "quotes"
     __table_args__ = (db.UniqueConstraint('symbol', 'timestamp', name="uniq_sym_time"),)

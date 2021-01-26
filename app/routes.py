@@ -1,5 +1,5 @@
 from app import app, db, helpers
-from app.models import Quote, Stock
+from app.models import Quote, Stock, Portfolio
 from sqlalchemy import exc
 from flask import render_template, request, redirect, url_for, make_response, Markup, jsonify, flash
 from dateutil import parser
@@ -67,11 +67,29 @@ def login():
             return redirect(url_for('index'))
 
 
-@app.route('/debug')
+@app.route('/debug_raw')
 def debug_raw_data():
     try:
         data = helpers.ws_get_positions()
         return jsonify(data)
+    except:
+        return jsonify({"error": "unknown"})
+
+
+@app.route('/debug_portfolios')
+def debug_raw_data():
+    try:
+        data = helpers.ws_get_positions()
+        portfolios = {}
+        for key, entry in data.items():
+            # POSITION HANDLING ---------------------------------------
+            if entry["account_id"] not in portfolios.keys():
+                port = Portfolio(entry["account_id"])
+                portfolios.update({entry["account_id"]: port})
+            else:
+                port = portfolios[entry["account_id"]]
+            port.positions.append(Stock(entry))
+        return jsonify(portfolios)
     except:
         return jsonify({"error": "unknown"})
 
@@ -85,8 +103,17 @@ def update():
         app.logger.debug("Unexpected error: {}".format(sys.exc_info()))
         resp = make_response(Markup(), 500)
         return resp
+    portfolios = {}
     for key, entry in data.items():
+        # POSITION HANDLING ---------------------------------------
+        # if entry["account_id"] not in portfolios.keys():
+        #     port = Portfolio(entry["account_id"])
+        #     portfolios.update({entry["account_id"]: port})
+        # else:
+        #     port = portfolios[entry["account_id"]]
+        # port.positions.append(Stock(entry))
         try:
+            # QUOTE HANDLING -----------------------------
             for line in entry['sparkline']:
                 if not line['close']:
                     continue
@@ -107,10 +134,12 @@ def update():
                     db.session.commit()
                 except exc.IntegrityError:
                     db.session.rollback()
+            # /QUOTE HANDLING ----------------------------
         except KeyError:
             app.logger.debug(f"There was an error updating {key}...\n", exc_info=True)
             # return make_response(jsonify(entry), 500)
             continue
+        # /POSITION HANDLING ---------------------------------------
     end = time.time()
     resp = make_response('', 200)
     resp.headers['X-Time-Elapsed'] = end-start
