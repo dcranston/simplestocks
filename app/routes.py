@@ -108,8 +108,9 @@ def update():
                 except exc.IntegrityError:
                     db.session.rollback()
         except KeyError:
-            app.logger.debug("There was an error updating...\n", exc_info=True)
-            return make_response(jsonify(entry), 500)
+            app.logger.debug(f"There was an error updating {key}...\n", exc_info=True)
+            # return make_response(jsonify(entry), 500)
+            continue
     end = time.time()
     resp = make_response('', 200)
     resp.headers['X-Time-Elapsed'] = end-start
