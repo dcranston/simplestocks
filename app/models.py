@@ -43,6 +43,7 @@ class Stock:
         self.since_prev_close = 0.0
         self.since_prev_close_pct = 0.0
         self.total_value = 0.0
+        self.set_quote(data['quote']['amount'])
 
     def set_quote(self, value):
         self.quote = value
