@@ -77,7 +77,7 @@ class Portfolio:
     def value(self):
         v = 0.0
         for pos in self.positions:
-            v += pos.total_value
+            v += pos["total_value"]
         return v
 
     def to_dict(self):
