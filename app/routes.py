@@ -70,7 +70,6 @@ def login():
 @app.route('/update', methods=['GET'])
 def update():
     start = time.time()
-    data = None
     try:
         data = helpers.ws_get_positions()
     except:
@@ -80,6 +79,8 @@ def update():
     for key, entry in data.items():
         try:
             for line in entry['sparkline']:
+                if not line['close']:
+                    continue
                 timestamp = parser.parse(line['date'] + " " + line['time'])
                 timestamp = timestamp.replace(tzinfo=pytz.timezone("US/Eastern"))
                 q = Quote(symbol=key,
@@ -118,9 +119,9 @@ def financials():
         data = f"{measure} value={value} {int(datetime.timestamp())}"
         write = requests.post(url, data=data)
         if write.status_code < 400:
-          flash(f"{measure}:{value} submitted successfully", "message")
+            flash(f"{measure}:{value} submitted successfully", "message")
         else:
-          flash(f"ERROR: There was a problem -- HTTP {write.status_code} {write.text}", "error")
+            flash(f"ERROR: There was a problem -- HTTP {write.status_code} {write.text}", "error")
         return render_template('financials.html')
     else:
         # show page
