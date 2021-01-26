@@ -91,7 +91,7 @@ def debug_portfolios():
             port.positions.append(Stock(entry))
         return jsonify(portfolios)
     except Exception as e:
-        return jsonify({"error": e})
+        return Markup(str(e))
 
 
 @app.route('/update', methods=['GET'])
