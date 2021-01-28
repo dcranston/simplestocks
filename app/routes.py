@@ -90,7 +90,9 @@ def debug_portfolios():
                 port = portfolios[entry["account_id"]]
             port.positions.append(Stock(entry))
         portfolio_dicts = [p.to_dict() for k, p in portfolios.items()]
-        return jsonify(portfolio_dicts)
+        response = jsonify(portfolio_dicts)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     except Exception as e:
         return Markup(str(e))
 
