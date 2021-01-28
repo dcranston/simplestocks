@@ -145,25 +145,3 @@ def update():
     resp = make_response('', 200)
     resp.headers['X-Time-Elapsed'] = end-start
     return resp
-
-
-@app.route('/financials', methods=["GET", "POST"])
-def financials():
-    if request.method == "POST":
-        # get data from form, insert, show page with flash
-        measure = request.form["measure"]
-        datetime = request.form["datetime"]
-        datetime = dateparser.parse(datetime)
-        value = request.form["value"]
-        url = "http://elk.nod.lan:8086/write?db=financials&precision=s"
-        data = f"{measure} value={value} {int(datetime.timestamp())}"
-        write = requests.post(url, data=data)
-        if write.status_code < 400:
-            flash(f"{measure}:{value} submitted successfully", "message")
-        else:
-            flash(f"ERROR: There was a problem -- HTTP {write.status_code} {write.text}", "error")
-        return render_template('financials.html')
-    else:
-        # show page
-        return render_template('financials.html')
-
